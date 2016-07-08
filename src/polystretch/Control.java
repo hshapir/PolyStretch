@@ -30,6 +30,7 @@ import com.pi4j.io.gpio.event.PinEventType;
  */
 public class Control {
     public long distance;
+    public static int totalStepCount;
     
     final GpioController gpio = GpioFactory.getInstance();
     
