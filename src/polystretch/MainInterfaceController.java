@@ -62,6 +62,18 @@ public class MainInterfaceController implements Initializable {
         Control.stepMotor(1);
     }
     
+    public void moveOneStepBackward(){
+        Control.stepMotor(-1);
+    }
+    
+    public void resetStepCount(){
+        Control.setAsStart();
+    }
+    
+    public void backToStartingPosition(){
+        Control.returnToStart();
+    }
+    
     public void moveCustomStepsForward(){
         String numSteps = numStepsField.getText();
         Integer steps = null;

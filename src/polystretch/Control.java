@@ -20,4 +20,13 @@ public class Control {
             }
         }
     }
+    
+    public static void returnToStart(){
+        stepMotor(Control.totalStepCount * (-1));
+        Control.totalStepCount = 0;
+    }
+    
+    public static void setAsStart(){
+        Control.totalStepCount = 0;
+    }
 }
