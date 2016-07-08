@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="polystretch.MainInterfaceController">
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="polystretch.MainInterfaceController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -18,7 +18,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem fx:id="closeButton" mnemonicParsing="false" text="Close" />
+                    <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#quit" text="Quit" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -40,7 +40,7 @@
                   <Button fx:id="oneStepButton" layoutX="14.0" layoutY="48.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="175.0" text="Step Motor Once" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0" />
                   <Button fx:id="customStepsButton" layoutX="122.0" layoutY="151.0" mnemonicParsing="false" text="Go!" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="151.0" />
                   <TextField fx:id="numStepsField" layoutX="43.0" layoutY="151.0" prefHeight="25.0" prefWidth="50.0" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="151.0" />
-                  <Label layoutX="16.0" layoutY="86.0" prefHeight="65.0" prefWidth="193.0" text="Custom Number of Steps (each step is around 1 micorn)" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="86.0" />
+                  <Label layoutX="16.0" layoutY="86.0" prefHeight="65.0" prefWidth="193.0" text="Custom Number of Steps (each step is around 1 micron)" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="86.0" />
                </children>
             </AnchorPane>
          </right>
