@@ -32,7 +32,18 @@ import com.pi4j.io.gpio.event.PinEventType;
 public class Control {
     public long distance;
     public static int totalStepCount;
+    
     private static GpioStepperMotorComponent motor = null;
+    
+    
+    public static void setAsStart(){
+        Control.totalStepCount = 0;
+    }
+    
+    public static void returnToStart(){
+        Control.stepMotor(Control.totalStepCount * (-1));
+        Control.totalStepCount = 0;
+    }
     public static void setup(){
          final GpioController gpio = GpioFactory.getInstance();
     
