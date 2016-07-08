@@ -5,6 +5,7 @@
  */
 package polystretch;
 
+import com.pi4j.component.motor.impl.GpioStepperMotorComponent;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPin;
@@ -31,7 +32,39 @@ import com.pi4j.io.gpio.event.PinEventType;
 public class Control {
     public long distance;
     public static int totalStepCount;
+    private static GpioStepperMotorComponent motor = null;
+    public static void setup(){
+         final GpioController gpio = GpioFactory.getInstance();
     
-    final GpioController gpio = GpioFactory.getInstance();
+        //NEED TO DO : provision pins for output, and ensure in LOW state
+        final GpioPinDigitalOutput[] pins = {
+            
+        
+        };
+        //ensures that the motor is shut down when the program terminates
+        gpio.setShutdownOptions(true, PinState.LOW, pins);
+        
+        //creates motor
+        GpioStepperMotorComponent m = new GpioStepperMotorComponent(pins);
+        motor = m;
+        
+        byte[] single_step_sequence = new byte[4];
+        single_step_sequence[0] = (byte) 0b0001;
+        single_step_sequence[1] = (byte) 0b0010;
+        single_step_sequence[2] = (byte) 0b0100;
+        single_step_sequence[3] = (byte) 0b1000;
+        
+        motor.setStepSequence(single_step_sequence);
+        
+        motor.setStepInterval(10);
+  
+    }
     
+    public static void stepMotor(int steps){
+        motor.step(steps);
+        
+    }
+   public GpioStepperMotorComponent getMotor(){
+       return motor;      
+   }
 }
