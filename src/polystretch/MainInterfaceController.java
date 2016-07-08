@@ -6,13 +6,16 @@
 package polystretch;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
@@ -67,11 +70,28 @@ public class MainInterfaceController implements Initializable {
     }
     
     public void resetStepCount(){
-        Control.setAsStart();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Are You Sure?");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to reset the step count? This will make automatic resets impossible. See the about tab in the help menu for more information on calibration.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            Control.setAsStart();
+        }  
     }
     
+    
     public void backToStartingPosition(){
-        Control.returnToStart();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Are You Sure?");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to return to the starting position? You will not be able to continue to stretch this polymer sample and you will lose your microscope view.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            Control.returnToStart();
+        }
     }
     
     public void moveCustomStepsForward(){
