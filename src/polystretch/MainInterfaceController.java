@@ -17,14 +17,22 @@ import javafx.scene.control.Label;
  * @author Harrison Shapiro
  */
 public class MainInterfaceController implements Initializable {
-    
+    //FXML variables go under here
     @FXML
     private Label label;
+    
+    //Other variables go under here
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
         System.out.println("You clicked me!");
         label.setText("Hello World!");
+    }
+    
+    @FXML
+    public void quit(ActionEvent event){
+        System.exit(0);
+        
     }
     
     @Override
