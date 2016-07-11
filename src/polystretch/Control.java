@@ -25,54 +25,87 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
+import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 /**
  *
  * @author eblair
  */
 public class Control {
+    private final static Logger LOGGER = Logger.getLogger(Control.class.getName());
+    private GpioController gpio;
+    private GpioStepperMotorComponent motor;
+    private byte[] stepSequence;
+    private BooleanProperty connectedProperty;
+    
     public long distance;
-    public static int totalStepCount;
-    
-    private static GpioStepperMotorComponent motor = null;
+    public int totalStepCount;
     
     
-    public static void setAsStart(){
-        Control.totalStepCount = 0;
+    public Control(){
+        totalStepCount = 0;
+        connectedProperty = new SimpleBooleanProperty(Boolean.FALSE);
+        stepSequence = new byte[4];
+        stepSequence[0] = (byte) 0b1010;
+        stepSequence[1] = (byte) 0b0110;
+        stepSequence[2] = (byte) 0b0101;
+        stepSequence[3] = (byte) 0b1001;
     }
     
-    public static void returnToStart(){
-        Control.stepMotor(Control.totalStepCount * (-1));
-        Control.totalStepCount = 0;
-    }
-    public static void setup(){
-         final GpioController gpio = GpioFactory.getInstance();
     
-        //NEED TO DO : provision pins for output, and ensure in LOW state
-        final GpioPinDigitalOutput[] pins = {
-            
+    public void setAsStart(){
+        totalStepCount = 0;
+    }
+    
+    public void returnToStart(){
+        stepMotor(totalStepCount * (-1));
+        totalStepCount = 0;
+    }
+    public void connect(){
+        LOGGER.info("connect...");
+        gpio = GpioFactory.getInstance();
+    
+        /*
+        Pins 18 and 22 are used to enable the stepper motor - they are always kept on high when the motor is to be used.
+        Pins 23, 24, 04, and 17 are used to control the 
         
+        */
+        
+        final GpioPinDigitalOutput[] pins = {
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_18, PinState.HIGH),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.HIGH),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_23, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW)
         };
         //ensures that the motor is shut down when the program terminates
-        gpio.setShutdownOptions(true, PinState.LOW, pins);
+        gpio.setShutdownOptions(true, PinState.LOW, PinPullResistance.PULL_DOWN, pins);
         
         //creates motor
-        GpioStepperMotorComponent m = new GpioStepperMotorComponent(pins);
-        motor = m;
-        
-        byte[] single_step_sequence = new byte[4];
-        single_step_sequence[0] = (byte) 0b0001;
-        single_step_sequence[1] = (byte) 0b0010;
-        single_step_sequence[2] = (byte) 0b0100;
-        single_step_sequence[3] = (byte) 0b1000;
-        
-        motor.setStepSequence(single_step_sequence);
-        
-        motor.setStepInterval(10);
-  
+        motor = new GpioStepperMotorComponent(pins);
+        motor.setStepSequence(stepSequence);
+        motor.setStepsPerRevolution(200);
+        motor.setStepInterval(1);
+        connectedProperty.setValue(Boolean.TRUE);
     }
     
-    public static void stepMotor(int steps){
-        motor.step(steps);
+    public void disconnect(){
+        LOGGER.info("disconnect.");
+        if(gpio != null){
+            gpio.shutdown();
+        }
+        connectedProperty.setValue(Boolean.FALSE);
+    }
+    
+    public boolean isConnected(){
+        return connectedProperty.getValue();
+    }
+    
+    public void stepMotor(int steps){
+        motor.step(-steps);
+        totalStepCount += steps;
         
     }
    public GpioStepperMotorComponent getMotor(){

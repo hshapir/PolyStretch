@@ -72,6 +72,8 @@ public class MainInterfaceController implements Initializable {
     @FXML
     private MenuItem aboutButton;
     
+    public Control controller;
+    
     //Other variables go under here
     
     
@@ -82,11 +84,11 @@ public class MainInterfaceController implements Initializable {
     }
     
     public void moveOneStepForward(){
-        Control.stepMotor(1);
+        controller.stepMotor(1);
     }
     
     public void moveOneStepBackward(){
-        Control.stepMotor(-1);
+        controller.stepMotor(-1);
     }
     
     public void resetStepCount(){
@@ -97,7 +99,7 @@ public class MainInterfaceController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            Control.setAsStart();
+            controller.setAsStart();
         }  
     }
     
@@ -110,7 +112,7 @@ public class MainInterfaceController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            Control.returnToStart();
+            controller.returnToStart();
         }
     }
     
@@ -124,7 +126,7 @@ public class MainInterfaceController implements Initializable {
             return;
         }
         if(steps > 0){
-            Control.stepMotor(steps);
+            controller.stepMotor(steps);
         } else{
             sendInvalidStepsAlert();
         }
@@ -141,7 +143,7 @@ public class MainInterfaceController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        Control.setup();
+        controller = new Control();
     }    
     
 }
