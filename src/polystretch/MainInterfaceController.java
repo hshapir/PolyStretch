@@ -38,6 +38,7 @@ import com.pi4j.io.gpio.event.GpioPinEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 import com.pi4j.component.motor.impl.GpioStepperMotorComponent;
+import javafx.scene.control.CheckBox;
 
 /**
  *
@@ -72,6 +73,9 @@ public class MainInterfaceController implements Initializable {
     @FXML
     private MenuItem aboutButton;
     
+    @FXML
+    private CheckBox safetyCheck;
+    
     public Control controller;
     
     //Other variables go under here
@@ -79,6 +83,7 @@ public class MainInterfaceController implements Initializable {
     
     @FXML
     public void quit(ActionEvent event){
+        controller.disconnect();
         Platform.exit();
         
     }
@@ -92,28 +97,18 @@ public class MainInterfaceController implements Initializable {
     }
     
     public void resetStepCount(){
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Are You Sure?");
-        alert.setHeaderText(null);
-        alert.setContentText("Are you sure you want to reset the step count? This will make automatic resets impossible. See the about tab in the help menu for more information on calibration.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            controller.setAsStart();
-        }  
+        if(!safetyCheck.isSelected()){
+            return;
+        }
+        controller.setAsStart();
     }
     
     
     public void backToStartingPosition(){
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Are You Sure?");
-        alert.setHeaderText(null);
-        alert.setContentText("Are you sure you want to return to the starting position? You will not be able to continue to stretch this polymer sample and you will lose your microscope view.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            controller.returnToStart();
+        if(!safetyCheck.isSelected()){
+            return;
         }
+        controller.returnToStart();
     }
     
     public void moveCustomStepsForward(){
@@ -144,6 +139,7 @@ public class MainInterfaceController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         controller = new Control();
+        controller.connect();
     }    
     
 }
