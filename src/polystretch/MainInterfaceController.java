@@ -90,10 +90,15 @@ public class MainInterfaceController implements Initializable {
     
     public void moveOneStepForward(){
         controller.stepMotor(1);
+        refreshStepOutputField();
     }
     
     public void moveOneStepBackward(){
+        if(!safetyCheck.isSelected()){
+            return;
+        }
         controller.stepMotor(-1);
+        refreshStepOutputField();
     }
     
     public void resetStepCount(){
@@ -101,6 +106,7 @@ public class MainInterfaceController implements Initializable {
             return;
         }
         controller.setAsStart();
+        refreshStepOutputField();
     }
     
     
@@ -109,9 +115,10 @@ public class MainInterfaceController implements Initializable {
             return;
         }
         controller.returnToStart();
+        refreshStepOutputField();
     }
     
-    public void moveCustomStepsForward(){
+    public void moveCustomStepsForward() throws InterruptedException{
         String numSteps = numStepsField.getText();
         Integer steps = null;
         try{
@@ -121,10 +128,18 @@ public class MainInterfaceController implements Initializable {
             return;
         }
         if(steps > 0){
-            controller.stepMotor(steps);
-        } else{
-            sendInvalidStepsAlert();
-        }
+            for(int i = 0; i < steps; i++){
+                controller.stepMotor(1);
+                Thread.sleep(1);
+            }
+        }else if(steps < 0 && safetyCheck.isSelected()){
+            for(int i = 0; i < -steps; i++){
+                controller.stepMotor(-1);
+                Thread.sleep(1);
+            }
+        } 
+        
+        refreshStepOutputField();
     }
     
     private void sendInvalidStepsAlert(){
@@ -140,6 +155,10 @@ public class MainInterfaceController implements Initializable {
         // TODO
         controller = new Control();
         controller.connect();
-    }    
+    } 
+    
+    public void refreshStepOutputField(){
+        strainOutputField.setText(controller.getStepCount().toString());
+    }
     
 }

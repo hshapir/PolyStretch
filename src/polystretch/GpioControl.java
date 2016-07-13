@@ -137,10 +137,10 @@ public class GpioControl {
         gpio = GpioFactory.getInstance();
         
         pin18 = gpio.provisionDigitalMultipurposePin(RaspiPin.GPIO_00, gpio18ModeProperty.
-                get(), PinPullResistance.PULL_DOWN);
+                get(), PinPullResistance.PULL_UP);
         
         pin22 = gpio.provisionDigitalMultipurposePin(RaspiPin.GPIO_01, gpio22ModeProperty.
-                get(), PinPullResistance.PULL_DOWN);
+                get(), PinPullResistance.PULL_UP);
 
         pin23 = gpio.provisionDigitalMultipurposePin(RaspiPin.GPIO_02, gpio23ModeProperty.
                 get(), PinPullResistance.PULL_DOWN);

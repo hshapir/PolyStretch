@@ -38,6 +38,8 @@ public class Control {
     private GpioStepperMotorComponent motor;
     private byte[] stepSequence;
     private BooleanProperty connectedProperty;
+    private GpioPinDigitalOutput enableA;
+    private GpioPinDigitalOutput enableB;
     
     public long distance;
     public int totalStepCount;
@@ -71,17 +73,19 @@ public class Control {
         Pins 23, 24, 04, and 17 are used to control the 
         
         */
+        enableA = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, PinState.HIGH);
+        gpio.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF, enableA);
+        enableB = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.HIGH);
+        gpio.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF, enableB);
         
         final GpioPinDigitalOutput[] pins = {
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_18, PinState.HIGH),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.HIGH),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_23, PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_17, PinState.LOW)
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_16, PinState.LOW)
         };
         //ensures that the motor is shut down when the program terminates
-        gpio.setShutdownOptions(true, PinState.LOW, PinPullResistance.PULL_DOWN, pins);
+        gpio.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF, pins);
         
         //creates motor
         motor = new GpioStepperMotorComponent(pins);
@@ -110,5 +114,9 @@ public class Control {
     }
    public GpioStepperMotorComponent getMotor(){
        return motor;      
+   }
+   
+   public Integer getStepCount(){
+       return totalStepCount;
    }
 }
